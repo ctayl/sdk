@@ -1406,53 +1406,41 @@ var buildfire = {
 
         , cropImage: function (url, options) {
 
-            if(buildfire.imageLib.isProdImageServer(url))
+            if (buildfire.imageLib.isProdImageServer(url)) {
                 url = url.replace(/^https:\/\//i, 'http://');
-
-
-            if(!options)options={};
-
-            if (typeof(options) != "object")
+            }
+            if (!options) {
+                options = {};
+            }
+            if (typeof (options) != "object") {
                 throw ("options not an object");
-
-            if (!options.width && !options.height)
-                options = {width: 'full', height: 'full'};
-
-            if (options.width == 'full') options.width = window.innerWidth;
-            if (options.height == 'full') options.height = window.innerHeight;
-
-            if(!options.width || !options.height){
+            }
+            if (!options.width && !options.height) {
+                options = { width: 'full', height: 'full' };
+            }
+            if (options.width == 'full') {
+                options.width = window.innerWidth;
+            }
+            if (options.height == 'full') {
+                options.height = window.innerHeight;
+            }
+            if (!options.width || !options.height) {
                 console.warn('cropImage doenst have width or height please fix. returning original url');
                 return url + '?h=' + options.height + '&w=' + options.width;
             }
 
             var ratio = window.devicePixelRatio;
-            if(options && options.disablePixelRatio)ratio = options.disablePixelRatio ;
-/*
-            if(buildfire.imageLib.isProdImageServer(url)){
-                url = url.replace(/^https:\/\//i, 'http://');
-                root ="http://buildfire.imgix.net" + url.substring(40); // length of root host
-            }
-            else if (url.indexOf("Kaleo.DevBucket/") > 0 ){
-                root ="http://bflegacy.imgix.net/" + url.split('Kaleo.DevBucket/')[1];
+            if (options && options.disablePixelRatio) {
+                ratio = options.disablePixelRatio;
             }
 
-
-            if(false && root) {
-                return root + "?fit=crop"
-                    + (options.width? "&w=" + Math.floor(options.width * ratio):"")
-                    + (options.height ? "&h=" + Math.floor(options.height * ratio) : "") ;
-            }
-             else {
- */
             var protocol = window.location.protocol == "https:" ? "https:" : "http:";
             var root = protocol + "//czi3m2qn.cloudimg.io/crop/";
 
             var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/";
             var compression = getCompression(options.compression);
-                //root = "http://czi3m2qn.cloudimg.io/width/"+ Math.floor(options.width * ratio) + "/tjpg.q40/" + root;
+
             return root + size + compression + url;
- //           }
 
             function getCompression(c) {
                 var result = 'n/'

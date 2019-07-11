@@ -1426,8 +1426,6 @@ var buildfire = {
                 return url + '?h=' + options.height + '&w=' + options.width;
             }
 
-
-            var root;
             var ratio = window.devicePixelRatio;
             if(options && options.disablePixelRatio)ratio = options.disablePixelRatio ;
 /*
@@ -1447,14 +1445,30 @@ var buildfire = {
             }
              else {
  */
-                root = (window.location.protocol == "https:"?"https:":"http:") + "//czi3m2qn.cloudimg.io/s/crop/";
+            var protocol = window.location.protocol == "https:" ? "https:" : "http:";
+            var root = protocol + "//czi3m2qn.cloudimg.io/crop/";
 
-                root =  root + Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/" + url;
-
+            var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/";
+            var compression = getCompression(options.compression);
                 //root = "http://czi3m2qn.cloudimg.io/width/"+ Math.floor(options.width * ratio) + "/tjpg.q40/" + root;
-                return root;
+            return root + size + compression + url;
  //           }
 
+            function getCompression(c) {
+                var result = 'n/'
+                if (c) {
+                    var isValid = typeof c === "number" && c >= 1 && c <= 100;
+                    if (isValid) {
+                        var value = 'png-lossy-' + c + '.q' + c + '/';
+                        if (/png-lossy-\d{1,3}.q\d{1,3}\//g.test(value)) {
+                            result = value;
+                        }
+                    } else {
+                        console.warn('Disabling compression, must be an integer between 1-100');
+                    }
+                }
+                return result;
+            }
         }
         ,local: {
             _parser: document.createElement('a')

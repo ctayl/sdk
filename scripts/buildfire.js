@@ -1391,16 +1391,24 @@ var buildfire = {
                     return url;
             }
             else{
-                root = (window.location.protocol == "https:"?"https:":"http:") + "//czi3m2qn.cloudimg.io/s/";
+                var protocol = window.location.protocol == "https:" ? "https:" : "http:";
+                var root = protocol + "//czi3m2qn.cloudimg.io/";
+                var compression = buildfire.imageLib.getCompression(options.compression);
 
-                if (options.width && !options.height)
-                    return root + "width/" + Math.floor(options.width * ratio) + "/" + url;
-                else if (!options.width && options.height)
-                    return root + "height/" + Math.floor(options.height * ratio) + "/" + url;
-                else if (options.width && options.height)
-                    return root + "resizenp/" + Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/" + url;
-                else
+                if (options.width && !options.height) {
+                    var size = Math.floor(options.width * ratio);
+                    return root + "width/" + size + "/" + compression + url;
+                }
+                else if (!options.width && options.height) {
+                    var size = Math.floor(options.height * ratio);
+                    return root + "height/" + size + "/" + compression + url;
+                }
+                else if (options.width && options.height) {
+                    var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio);
+                    return root + "bound/" + size + "/" + compression + url;
+                } else {
                     return url;
+                }
             }
         }
 
@@ -1438,25 +1446,24 @@ var buildfire = {
             var root = protocol + "//czi3m2qn.cloudimg.io/crop/";
 
             var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/";
-            var compression = getCompression(options.compression);
+            var compression = buildfire.imageLib.getCompression(options.compression);
 
             return root + size + compression + url;
-
-            function getCompression(c) {
-                var result = 'n/'
-                if (c) {
-                    var isValid = typeof c === "number" && c >= 1 && c <= 100;
-                    if (isValid) {
-                        var value = 'png-lossy-' + c + '.q' + c + '/';
-                        if (/png-lossy-\d{1,3}.q\d{1,3}\//g.test(value)) {
-                            result = value;
-                        }
-                    } else {
-                        console.warn('Disabling compression, must be an integer between 1-100');
+        },
+        getCompression: function (c) {
+            var result = 'n/'
+            if (c) {
+                var isValid = typeof c === "number" && c >= 1 && c <= 100;
+                if (isValid) {
+                    var value = 'png-lossy-' + c + '.q' + c + '/';
+                    if (/png-lossy-\d{1,3}.q\d{1,3}\//g.test(value)) {
+                        result = value;
                     }
+                } else {
+                    console.warn('Disabling compression, must be an integer between 1-100');
                 }
-                return result;
             }
+            return result;
         }
         ,local: {
             _parser: document.createElement('a')

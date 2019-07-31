@@ -525,6 +525,10 @@ var buildfire = {
             html.setAttribute('majorVersion', majorVersion);
             html.setAttribute('fullVersion', fullVersion);
 
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
+                html.setAttribute('safe-area', 'true');
+            }
         }
         , getCSSFiles: function (callback) {
             var p = new Packet(null, 'appearance.getCSSFiles');

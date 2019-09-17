@@ -1373,7 +1373,7 @@ var buildfire = {
         // height: integer or 'full'
         // disablePixelRation: bool
         // }
-        , resizeImage: function (url, options) {
+        , resizeImage: function (url, options, element, callback) {
             // return unsupported file types
             if (/.(gif|mp4|mpeg)(?!.)/g.test(url)) {
                 var filetype = /.(gif|mp4|mpeg)(?!.)/g.exec(url)[0];
@@ -1421,26 +1421,32 @@ var buildfire = {
             else{
                 var protocol = window.location.protocol == "https:" ? "https:" : "http:";
                 var root = protocol + "//czi3m2qn.cloudimg.io/";
-                var compression = buildfire.imageLib.getCompression(options.compression);
+                var compression = buildfire.imageLib._getCompression(options.compression);
+                var result = '';
 
                 if (options.width && !options.height) {
                     var size = Math.floor(options.width * ratio);
-                    return root + "width/" + size + "/" + compression + url;
+                    result = root + "width/" + size + "/" + compression + url;
                 }
                 else if (!options.width && options.height) {
                     var size = Math.floor(options.height * ratio);
-                    return root + "height/" + size + "/" + compression + url;
+                    result = root + "height/" + size + "/" + compression + url;
                 }
                 else if (options.width && options.height) {
                     var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio);
-                    return root + "bound/" + size + "/" + compression + url;
+                    result = root + "bound/" + size + "/" + compression + url;
                 } else {
-                    return url;
+                    result = url;
                 }
+
+                this._handleElement(element, result, callback);
+
+                return result;
             }
+
         }
 
-        , cropImage: function (url, options) {
+        , cropImage: function (url, options, element, callback) {
             // return unsupported file types
             if (/.(gif|mp4|mpeg)(?!.)/g.test(url)) {
                 var filetype = /.(gif|mp4|mpeg)(?!.)/g.exec(url)[0];
@@ -1480,11 +1486,55 @@ var buildfire = {
             var root = protocol + "//czi3m2qn.cloudimg.io/crop/";
 
             var size = Math.floor(options.width * ratio) + "x" + Math.floor(options.height * ratio) + "/";
-            var compression = buildfire.imageLib.getCompression(options.compression);
+            var compression = buildfire.imageLib._getCompression(options.compression);
 
-            return root + size + compression + url;
+            var result = root + size + compression + url;
+
+            this._handleElement(element, result, callback);
+
+            return result;
         },
-        getCompression: function (c) {
+        _handleElement: function (element, src, callback) {
+            if (element) {
+                var img = new Image();
+                img.src = this._getLocalPath(src);
+                var parent = this;
+
+                img.onload = function () {
+                    parent._handleImage(element, this.src, src);
+                    if (callback) callback(this.src);
+                }
+
+                img.onerror = function () {
+                    var p = new Packet(null, 'imageCache.download', src);
+                    buildfire._sendPacket(p, function (error, localPath) {
+                        parent._handleImage(element, localPath, src);
+                        if (callback) callback(localPath);
+                    });
+                }
+            }
+        },
+        _handleImage: function (element, src, fallback) {
+            if (element.tagName === 'IMG') {
+                element.src = src;
+            } else {
+                var backgroundCss = 'url("' + src + '"), url("' + fallback + '")';
+                element.style.setProperty('background-image', backgroundCss, 'important');
+            }
+        },
+        _getLocalPath: function (string) {
+            var hash = 0;
+            if (!string.length) return hash;
+
+            for (var i = 0; i < string.length; i++) {
+                var char = string.charCodeAt(i);
+                hash = (hash << 5) - hash + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+
+            return 'cdvfile://localhost/persistent/imageCache/images/' + hash + '/image';
+        },
+        _getCompression: function (c) {
             var result = 'n/'
             if (c) {
                 var isValid = typeof c === "number" && c >= 1 && c <= 100;

@@ -1683,65 +1683,122 @@ var buildfire = {
     }
     /// ref: https://github.com/BuildFire/sdk/wiki/How-to-use-ImageLib
     , imageLib: {
-        get ENUMS() {
-            return {
-                SIZES: {
-                    xxs: 32,
-                    xs: 64,
-                    s: 128,
-                    m: 200,
-                    l: 304,
-                    xl: 416,
-                    xxl: 600,
-                    '720': 720,
-                    '1080': 1080,
-                    '1440': 1440,
-                    get 'full-width'() {
-                        return this.findNearest(1);
-                    },
-                    get 'half-width'() {
-                        return this.findNearest(2);
-                    },
-                    get 'third-width'() {
-                        return this.findNearest(3);
-                    },
-                    get 'fourth-width'() {
-                        return this.findNearest(4);
-                    },
-                    get 'fifth-width'() {
-                        return this.findNearest(5);
-                    },
-                    get 'sixth-width'() {
-                        return this.findNearest(6);
-                    },
-                    findNearest: function (ratio) {
-                        var match = null;
-                        for (var i = 0; i < this.VALID_SIZES.length; i++) {
-                            var size = this.VALID_SIZES[i];
+        // get ENUMS() {
+        //     return {
+        //         SIZES: {
+        //             xxs: 32,
+        //             xs: 64,
+        //             s: 128,
+        //             m: 200,
+        //             l: 304,
+        //             xl: 416,
+        //             xxl: 600,
+        //             '720': 720,
+        //             '1080': 1080,
+        //             '1440': 1440,
+        //             get 'full-width'() {
+        //                 return this.findNearest(1);
+        //             },
+        //             get 'half-width'() {
+        //                 return this.findNearest(2);
+        //             },
+        //             get 'third-width'() {
+        //                 return this.findNearest(3);
+        //             },
+        //             get 'fourth-width'() {
+        //                 return this.findNearest(4);
+        //             },
+        //             get 'fifth-width'() {
+        //                 return this.findNearest(5);
+        //             },
+        //             get 'sixth-width'() {
+        //                 return this.findNearest(6);
+        //             },
+        //             findNearest: function (ratio) {
+        //                 var match = null;
+        //                 for (var i = 0; i < this.VALID_SIZES.length; i++) {
+        //                     var size = this.VALID_SIZES[i];
 
-                            if ((window.innerWidth / ratio) < this[size]) {
-                                match = size;
-                                break;
-                            }
-                        }
-                        return this[match];
-                    },
-                    VALID_SIZES: [
-                        'xs', 's', 'm', 'l', 'xl', 'xxl', //standard
-                        '720', '1080', '1440', //desktop
-                        'full-width', 'half-width', 'third-width', 'quarter-width', 'fifth-width', 'sixth-width' // responsive
-                    ]
-                },
-                ASPECT_RATIOS: {
-                    '1:1': 1,
-                    '4:3': 0.75,
-                    '16:9': 0.5625,
-                    '9:16': 1.77777778,
-                    '2.39:1': 0.41841004,
-                    VALID_RATIOS: ['1:1', '4:3', '16:9', '9:16', '2.39:1']
-                }
-            }
-        },
+        //                     if ((window.innerWidth / ratio) < this[size]) {
+        //                         match = size;
+        //                         break;
+        //                     }
+        //                 }
+        //                 return this[match];
+        //             },
+        //             VALID_SIZES: [
+        //                 'xs', 's', 'm', 'l', 'xl', 'xxl', //standard
+        //                 '720', '1080', '1440', //desktop
+        //                 'full-width', 'half-width', 'third-width', 'quarter-width', 'fifth-width', 'sixth-width' // responsive
+        //             ]
+        //         },
+        //         ASPECT_RATIOS: {
+        //             '1:1': 1,
+        //             '4:3': 0.75,
+        //             '16:9': 0.5625,
+        //             '9:16': 1.77777778,
+        //             '2.39:1': 0.41841004,
+        //             VALID_RATIOS: ['1:1', '4:3', '16:9', '9:16', '2.39:1']
+        //         }
+        //     }
+        // },
+        // ENUMS: {
+        //     SIZES: {
+        //         xxs: 32,
+        //         xs: 64,
+        //         s: 128,
+        //         m: 200,
+        //         l: 304,
+        //         xl: 416,
+        //         xxl: 600,
+        //         '720': 720,
+        //         '1080': 1080,
+        //         '1440': 1440,
+        //         get 'full-width'() {
+        //             return this.findNearest(1);
+        //         },
+        //         get 'half-width'() {
+        //             return this.findNearest(2);
+        //         },
+        //         get 'third-width'() {
+        //             return this.findNearest(3);
+        //         },
+        //         get 'fourth-width'() {
+        //             return this.findNearest(4);
+        //         },
+        //         get 'fifth-width'() {
+        //             return this.findNearest(5);
+        //         },
+        //         get 'sixth-width'() {
+        //             return this.findNearest(6);
+        //         },
+        //         findNearest: function (ratio) {
+        //             var match = null;
+        //             for (var i = 0; i < this.VALID_SIZES.length; i++) {
+        //                 var size = this.VALID_SIZES[i];
+
+        //                 if ((window.innerWidth / ratio) < this[size]) {
+        //                     match = size;
+        //                     break;
+        //                 }
+        //             }
+        //             return this[match];
+        //         },
+        //         VALID_SIZES: [
+        //             'xs', 's', 'm', 'l', 'xl', 'xxl', //standard
+        //             '720', '1080', '1440', //desktop
+        //             'full-width', 'half-width', 'third-width', 'quarter-width', 'fifth-width', 'sixth-width' // responsive
+        //         ]
+        //     },
+        //     ASPECT_RATIOS: {
+        //         '1:1': 1,
+        //         '4:3': 0.75,
+        //         '16:9': 0.5625,
+        //         '9:16': 1.77777778,
+        //         '2.39:1': 0.41841004,
+        //         VALID_RATIOS: ['1:1', '4:3', '16:9', '9:16', '2.39:1']
+        //     }
+        // },
         /// ref: https://github.com/BuildFire/sdk/wiki/How-to-use-ImageLib#buildfireimagelibshowdialogoptions-callback
         showDialog: function (options, callback) {
             var p = new Packet(null, 'imageLib.showDialog', options);

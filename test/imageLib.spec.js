@@ -36,6 +36,17 @@ describe('buildfire.imageLib', function () {
 
     });
 
+    describe('buildfire.imageLib ENUMS', function () {
+        beforeEach( function () {
+            spyOn(buildfire.imageLib, 'ENUMS');
+
+            buildfire.imageLib.ENUMS;
+        });
+        it("buildfire.imageLib.ENUMS should exist and return an object", function () {
+            expect(typeof buildfire.imageLib.ENUMS).toEqual("object");
+        });
+    });
+
     describe('buildfire.imageLib cropImage', function () {
         beforeEach( function () {
             spyOn(buildfire.imageLib, 'cropImage');

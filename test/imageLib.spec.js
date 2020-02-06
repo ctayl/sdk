@@ -42,8 +42,8 @@ describe('buildfire.imageLib', function () {
 
             buildfire.imageLib.ENUMS;
         });
-        it("buildfire.imageLib.ENUMS should exist and return an object", function () {
-            expect(typeof buildfire.imageLib.ENUMS).toEqual("object");
+        it("buildfire.imageLib.ENUMS should exist and return a function", function () {
+            expect(typeof buildfire.imageLib.ENUMS).toEqual("function");
         });
     });
 
